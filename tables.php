@@ -10,6 +10,7 @@
 //##############################################################################
 include "top.php";
 
+$tableName = "DSCHICK_advising";
 
 if (isset($_GET['getRecordsFor'])) {
     $tableName = $_GET['getRecordsFor'];
@@ -17,6 +18,7 @@ if (isset($_GET['getRecordsFor'])) {
 
 // Begin output
 print '<article>';
+print '<p>table name: ' . $tableName . '</p>';
 print '<h2>Database: ' . DATABASE_NAME . '</h2>';
 
 // print out a list of all the tables and their description
@@ -70,14 +72,6 @@ if ($tableName != "") {
     print '<table>';
 
     $query = 'SELECT * FROM ' . $tableName;
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
-print '<p>table name: ' . $tableName . '</p>';
     $a = $thisDatabaseReader->select($query, "", 0, 0);
 
     print '<tr>';
