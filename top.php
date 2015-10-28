@@ -1,6 +1,6 @@
 <?php
-include "/lib/constants.php";
-require_once('/lib/custom-functions.php');
+include "lib/constants.php";
+require_once('lib/custom-functions.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +39,7 @@ require_once('/lib/custom-functions.php');
 
         require_once($includeLibPath . 'mailMessage.php');
 
-        require_once('/lib/security.php');
+        require_once('lib/security.php');
 
         require_once($includeDBPath . 'Database.php');
 
