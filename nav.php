@@ -16,6 +16,13 @@
             print '<li><a href="tables.php">Display Tables</a></li>';
         }
 
+        if ($path_parts['filename'] == "plan") {
+            print '<li class="activePage">Show My Plan </li>';
+        } else {
+            print '<li><a href="tables.php">Show My Plan</a></li>';
+        }
+
+
         ?>
     </ol>
 </nav>
