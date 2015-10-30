@@ -76,13 +76,10 @@
         return $info2;
     }
 
-        /**
-     * @param array $array
-     * @param string $value
-     * @param bool $asc - ASC (true) or DESC (false) sorting
-     * @param bool $preserveKeys
-     * @return array
-     * */
+    /**
+     * This function sorts the array of all terms by year, making this page print the courses in order.
+     * $value is the value of the subarray key you want to sort by.
+     */
     function sortBySubValue($array, $value, $asc = true, $preserveKeys = false) {
         if ($preserveKeys) {
             $c = array();
@@ -113,12 +110,38 @@
         }
 
         return $array;
+
     }
+
+    function getCredits($plan, $term, $year){
+        // connect to database
+        require_once('../bin/Database.php');
+        $dbUserName = get_current_user() . '_reader';
+        $whichPass = "r"; //flag for which one to use.
+        $dbName = DATABASE_NAME;
+        $thisDatabaseReader = new Database($dbUserName, $whichPass, $dbName);
+        $dbUserName = get_current_user() . '_writer';
+        $whichPass = "w";
+        $thisDatabaseWriter = new Database($dbUserName, $whichPass, $dbName);
+
+        // now execute query
+        $query = "SELECT SUM(fldCredits) FROM tblCourses INNER JOIN tblSemesterPlan ON
+        tblSemesterPlan.fnkCourseId = tblCourses.pmkCourseNumber
+        WHERE tblSemesterPlan.fnkTerm = ? AND tblSemesterPlan.fldYear = ? AND tblSemesterPlan.fnkPlanId = ?";
+        $data = array($term, $year, $plan);
+        $info2 = $thisDatabaseReader->select($query, $data, 1, 2, 0, 0, false, false);
+        return $info2;
+
+
+    }
+
+    print '<pre>' . print_r(getCredits(1, 'fall', '2015')). '</pre>';
+
 
 
     /*
      * Now, we print out the courses for each term in a certain plan.
-     * We use _get to be able to view different plans
+     * We use $_get to be able to view different plans
      */
     $planID = (int) $_GET['plan'];
     print '<br><h1>Plan ID: ' . $planID . '</h1>';
@@ -127,7 +150,11 @@
         $year = $chunk[0];
         $sem = $chunk[1];
         $q = getCoursesBySem($planID, $sem, $year);
+        foreach(getCredits($planID, $sem, $year) as $i){
+            $credits = $i[0];
+        }
         print '<br><h2>' . $sem . ' ' . $year . '</h2>';
         print '<aside>' . printQuery($q) . '</aside>';
+        print '<aside>Credits: ' . $credits . '</aside>';
     }
 ?>
