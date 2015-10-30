@@ -1,9 +1,11 @@
-
 <?php
+    /*
+     * Plan.php prints out the plan. We pass the plan variable in the URL
+     */
     include "top.php";
 
     /*
-     * this function handles getting courses by year, semester, and plan.
+     * This function handles getting courses by year, semester, and plan.
      * After we use this, we simply have to print out the data
      */
     function getCoursesBySem($plan, $semester, $year){
@@ -66,27 +68,24 @@
         $thisDatabaseWriter = new Database($dbUserName, $whichPass, $dbName);
 
         // now we execute query
-        $query = 'SELECT tblSemesterPlan.fnkTerm, tblSemesterPlan.fldYear FROM tblSemesterPlan INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
+        $query = 'SELECT DISTINCT tblSemesterPlan.fldYear, tblSemesterPlan.fnkTerm FROM tblSemesterPlan INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
         WHERE tbl4YP.pmkPlanId = ?';
         $data = array($plan);
         $info2 = $thisDatabaseReader->select($query, $data, 1, 0, 0, 0, false, false);
         return $info2;
     }
 
-    $planID = 1;
-    foreach (array_chunk(getTerms($planID), 2) as $chunk){
-        foreach($chunk as $pair){
-            $sem = $pair[0];
-            $year = $pair[1];
-
-        }
-
+    /*
+     * Now, we print out the courses for each term in a certain plan.
+     * We use _get to be able to view different plans
+     */
+    $planID = (int) $_GET['plan'];
+    print '<br><h1>Plan ID: ' . $planID . '</h1>';
+    foreach (getTerms($planID) as $chunk){
+        $year = $chunk[0];
+        $sem = $chunk[1];
         $q = getCoursesBySem($planID, $sem, $year);
         print '<br><h2>' . $sem . ' ' . $year . '</h2>';
         print '<aside>' . printQuery($q) . '</aside>';
-
-
-
     }
-
 ?>
