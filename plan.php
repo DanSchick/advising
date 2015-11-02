@@ -4,7 +4,7 @@
      */
     include "top.php";
 
-    /*
+    /**
      * This function handles getting courses by year, semester, and plan.
      * After we use this, we simply have to print out the data
      */
@@ -15,12 +15,11 @@
         $whichPass = "r"; //flag for which one to use.
         $dbName = DATABASE_NAME;
         $thisDatabaseReader = new Database($dbUserName, $whichPass, $dbName);
-        $dbUserName = get_current_user() . '_writer';
-        $whichPass = "w";
-        $thisDatabaseWriter = new Database($dbUserName, $whichPass, $dbName);
 
         // now, execute query
-        $query = 'SELECT tblCourses.fldCourseName FROM tblCourses INNER JOIN tblSemesterPlan ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
+        $query = 'SELECT tblCourses.pmkCourseNumber, tblCourses.fldCourseName FROM tblCourses INNER JOIN tblSemesterPlan
+        ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP
+        ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
         WHERE tbl4YP.pmkPlanId = ? AND tblSemesterPlan.fnkTerm = ? AND tblSemesterPlan.fldYear = ?';
         $data = array($plan, $semester, $year);
         $info2 = $thisDatabaseReader->select($query, $data, 1, 2, 0, 0, false, false);
@@ -34,7 +33,7 @@
      */
     function printQuery($query){
         $highlight = 1; // used to highlight alternate rows
-        $columns = 1;
+        $columns = 2;
         print '<table>';
         foreach ($query as $rec) {
             $highlight++;
@@ -64,13 +63,12 @@
         $whichPass = "r"; //flag for which one to use.
         $dbName = DATABASE_NAME;
         $thisDatabaseReader = new Database($dbUserName, $whichPass, $dbName);
-        $dbUserName = get_current_user() . '_writer';
-        $whichPass = "w";
-        $thisDatabaseWriter = new Database($dbUserName, $whichPass, $dbName);
 
         // now we execute query
-        $query = 'SELECT DISTINCT tblSemesterPlan.fldYear, tblSemesterPlan.fnkTerm FROM tblSemesterPlan INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
-        WHERE tbl4YP.pmkPlanId = ?';
+        $query = 'SELECT DISTINCT tblSemesterPlan.fldYear, tblSemesterPlan.fnkTerm FROM tblSemesterPlan
+        INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber
+        INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent
+        ON tblStudent.pmkNetID = tbl4YP.fnkNetId WHERE tbl4YP.pmkPlanId = ?';
         $data = array($plan);
         $info2 = $thisDatabaseReader->select($query, $data, 1, 0, 0, 0, false, false);
         return $info2;
@@ -110,9 +108,11 @@
         }
 
         return $array;
-
     }
 
+    /**
+     * This returns the sum of the credits for each semester and term
+     */
     function getCredits($plan, $term, $year){
         // connect to database
         require_once('../bin/Database.php');
@@ -120,13 +120,10 @@
         $whichPass = "r"; //flag for which one to use.
         $dbName = DATABASE_NAME;
         $thisDatabaseReader = new Database($dbUserName, $whichPass, $dbName);
-        $dbUserName = get_current_user() . '_writer';
-        $whichPass = "w";
-        $thisDatabaseWriter = new Database($dbUserName, $whichPass, $dbName);
 
         // now execute query
-        $query = "SELECT SUM(fldCredits) FROM tblCourses INNER JOIN tblSemesterPlan ON
-        tblSemesterPlan.fnkCourseId = tblCourses.pmkCourseNumber
+        $query = "SELECT SUM(fldCredits) FROM tblCourses INNER JOIN tblSemesterPlan
+        ON tblSemesterPlan.fnkCourseId = tblCourses.pmkCourseNumber
         WHERE tblSemesterPlan.fnkTerm = ? AND tblSemesterPlan.fldYear = ? AND tblSemesterPlan.fnkPlanId = ?";
         $data = array($term, $year, $plan);
         $info2 = $thisDatabaseReader->select($query, $data, 1, 2, 0, 0, false, false);
@@ -135,12 +132,9 @@
 
     }
 
-    print '<pre>' . print_r(getCredits(1, 'fall', '2015')). '</pre>';
-
-
 
     /*
-     * Now, we print out the courses for each term in a certain plan.
+     * Now, we print out the courses for each term in a certain plan as well as the credits
      * We use $_get to be able to view different plans
      */
     $planID = (int) $_GET['plan'];
@@ -150,6 +144,7 @@
         $year = $chunk[0];
         $sem = $chunk[1];
         $q = getCoursesBySem($planID, $sem, $year);
+        // we have to loop through the getCredits array because we have to pull out the number
         foreach(getCredits($planID, $sem, $year) as $i){
             $credits = $i[0];
         }
