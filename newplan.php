@@ -13,11 +13,13 @@ if( $_POST )
   $NetID = $_POST['NetID'];
 
 
-  $query = "INSERT INTO `DSCHICK_advising`.`tbl7YP` (`fldStudentName`, `fldNumCredits`, `fldAdvisorId`, `fldMajor`, `fldMinor`, `fldCatYear`, `fldDateCreated`, `pmkPlanId`, `fnkNetId`)
+  $query = "INSERT INTO `DSCHICK_advising`.`tbl4YP` (`fldStudentName`, `fldNumCredits`, `fldAdvisorId`, `fldMajor`, `fldMinor`, `fldCatYear`, `fldDateCreated`, `pmkPlanId`, `fnkNetId`)
   VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE(), NULL, ?)";
   $data = array($users_name, $num_credits, $AdvisorID, $Major, $Minor, $CatYear, $NetID);
   $insert = $thisDatabaseWriter->insert($query, $data, 0, 0, 0, false, false);
-  HEADER("Location: addClass.php");
+  if($insert == 1){
+    print '<p> New plan Created! Click <a href="addClass.php">HERE</a> to add classes.</p>';
+  }
 
 }
 ?>
