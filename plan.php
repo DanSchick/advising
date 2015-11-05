@@ -5,6 +5,18 @@
     include "top.php";
 
     /**
+     * To start, we print out information about the plan using queries
+     */
+    $planID = (int) $_GET['plan'];
+    $query = "SELECT fldStudentName, fldAdvisorName FROM tbl4YP
+    INNER JOIN tblAdvisor ON tbl4YP.fldAdvisorId = tblAdvisor.pmkNetId WHERE pmkPlanId=?";
+    $data = array($planID);
+    $names = $thisDatabaseWriter->select($query, $data, 1, 0, 0, false, false);
+    print '<h1>Student Name: ' . $names[0][0] . '</h1>';
+    print '<h1>Advisor Name: ' . $names[0][1] . '</h1>';
+
+
+    /**
      * This function handles getting courses by year, semester, and plan.
      * After we use this, we simply have to print out the data
      */
@@ -17,8 +29,8 @@
         $thisDatabaseReader = new Database($dbUserName, $whichPass, $dbName);
 
         // now, execute query
-        $query = 'SELECT tblCourses.pmkCourseNumber, tblCourses.fldCourseName FROM tblCourses INNER JOIN tblSemesterPlan
-        ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber INNER JOIN tbl4YP
+        $query = 'SELECT tblCourses.fnkCourseId, tblCourses.fldCourseName FROM tblCourses INNER JOIN tblSemesterPlan
+        ON tblSemesterPlan.fnkCourseId=tblCourses.fnkCourseId INNER JOIN tbl4YP
         ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent ON tblStudent.pmkNetID = tbl4YP.fnkNetId
         WHERE tbl4YP.pmkPlanId = ? AND tblSemesterPlan.fnkTerm = ? AND tblSemesterPlan.fldYear = ?';
         $data = array($plan, $semester, $year);
@@ -66,7 +78,7 @@
 
         // now we execute query
         $query = 'SELECT DISTINCT tblSemesterPlan.fldYear, tblSemesterPlan.fnkTerm FROM tblSemesterPlan
-        INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.pmkCourseNumber
+        INNER JOIN tblCourses ON tblSemesterPlan.fnkCourseId=tblCourses.fnkCourseId
         INNER JOIN tbl4YP ON tblSemesterPlan.fnkPlanId=tbl4YP.pmkPlanId INNER JOIN tblStudent
         ON tblStudent.pmkNetID = tbl4YP.fnkNetId WHERE tbl4YP.pmkPlanId = ?';
         $data = array($plan);
@@ -123,7 +135,7 @@
 
         // now execute query
         $query = "SELECT SUM(fldCredits) FROM tblCourses INNER JOIN tblSemesterPlan
-        ON tblSemesterPlan.fnkCourseId = tblCourses.pmkCourseNumber
+        ON tblSemesterPlan.fnkCourseId = tblCourses.fnkCourseId
         WHERE tblSemesterPlan.fnkTerm = ? AND tblSemesterPlan.fldYear = ? AND tblSemesterPlan.fnkPlanId = ?";
         $data = array($term, $year, $plan);
         $info2 = $thisDatabaseReader->select($query, $data, 1, 2, 0, 0, false, false);
@@ -133,11 +145,10 @@
     }
 
 
-    /*
+    /*********************************************************
      * Now, we print out the courses for each term in a certain plan as well as the credits
      * We use $_get to be able to view different plans
      */
-    $planID = (int) $_GET['plan'];
     print '<br><h1>Plan ID: ' . $planID . '</h1>';
     $planTerms = sortBySubValue(getTerms($planID), 'fldYear', true, false);
     foreach ($planTerms as $chunk){

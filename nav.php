@@ -16,11 +16,24 @@
             print '<li><a href="tables.php">Display Tables</a></li>';
         }
 
-        if ($path_parts['filename'] == "plan") {
+        if ($path_parts['filename'] == "viewPlans") {
             print '<li class="activePage">Show My Plan </li>';
         } else {
-            print '<li><a href="plan.php">Show My Plan</a></li>';
+            print '<li><a href="viewPlans.php">Show My Plan</a></li>';
         }
+
+        if ($path_parts['filename'] == "addClass") {
+            print '<li class="activePage">Add Classes</li>';
+        } else {
+            print '<li><a href="addClass.php">Add Classes</a></li>';
+        }
+
+        if ($path_parts['filename'] == "newplan") {
+            print '<li class="activePage">Create New Plan </li>';
+        } else {
+            print '<li><a href="newplan.php">Create New Plan </a></li>';
+        }
+
 
 
         ?>
