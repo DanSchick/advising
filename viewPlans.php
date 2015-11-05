@@ -15,26 +15,26 @@ function deletePlan($ID){
     $data = $array($ID);
     $del = $thisDatabaseWriter->delete($query, $data, 1, 0, 0, false, false);
     $test = $thisDatabaseWriter->testquery($query, $data, 1, 0, 0, false, false);
-
 }
 
 
-
-print '<br><br><h2>User ' . get_current_user() . ' has these plans available:</h2>';
+$username = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
+print '<br><br><h2>User ' . $username . ' has these plans available:</h2>';
 // we do a query to show all the plans a user has
-$query = "SELECT pmkPlanId FROM tbl4YP WHERE fnkNetId = ?";
-$data = array(get_current_user());
+$query = "SELECT pmkPlanId, fldDateCreated FROM tbl4YP WHERE fnkNetId = ?";
+$data = array($username);
 $plans = $thisDatabaseReader->select($query, $data, 1, 0, 0, false, false);
 // print each plan as a link that plan.php will get through $_GET
-print '<ol>';
+print '<ul>';
 foreach($plans as $plan){
     print '<li>';
     $id = $plan[0];
-    print '<a href=plan.php?plan=' . $id . '>Plan '. $id . '</a>';
+    $date = $plan[1];
+    print '<a href=plan.php?plan=' . $id . '>Plan '. $id . ' | Created on ' . $date . '</a>';
 
     print '</li>';
 }
-print '</ol>';
+print '</ul>';
 
 
 

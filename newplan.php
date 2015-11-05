@@ -12,19 +12,12 @@ if( $_POST )
   $CatYear = $_POST['CatYear'];
   $NetID = $_POST['NetID'];
 
-  // now, we sanitize vales
-  // $users_name = mysql_real_escape_string($users_name);
-  // $num_credits = mysql_real_escape_string($num_credits);
-  // $AdvisorID = mysql_real_escape_string($AdvisorID);
-  // $Minor = mysql_real_escape_string($Minor);
-  // $Major = mysql_real_escape_string($Major);
-  // $CatYear = mysql_real_escape_string($CatYear);
-  // $NetID = mysql_real_escape_string($NetID);
 
-  $query = "INSERT INTO `DSCHICK_advising`.`tbl4YP` (`fldStudentName`, `fldNumCredits`, `fldAdvisorId`, `fldMajor`, `fldMinor`, `fldCatYear`, `fldDateCreated`, `pmkPlanId`, `fnkNetId`)
+  $query = "INSERT INTO `DSCHICK_advising`.`tbl7YP` (`fldStudentName`, `fldNumCredits`, `fldAdvisorId`, `fldMajor`, `fldMinor`, `fldCatYear`, `fldDateCreated`, `pmkPlanId`, `fnkNetId`)
   VALUES (?, ?, ?, ?, ?, ?, CURRENT_DATE(), NULL, ?)";
   $data = array($users_name, $num_credits, $AdvisorID, $Major, $Minor, $CatYear, $NetID);
   $insert = $thisDatabaseWriter->insert($query, $data, 0, 0, 0, false, false);
+  HEADER("Location: addClass.php");
 
 }
 ?>

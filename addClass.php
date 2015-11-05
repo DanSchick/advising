@@ -13,10 +13,12 @@ if( $_POST ){
   // go to confirm page
   header($url);
 
+
 }
 ?>
 
 <!-- BEGIN HTML FORM -->
+<br><br>
 <form method='post'>
   CourseId: <input type='text' name='CourseId' id='CourseId' /><br />
 
@@ -25,7 +27,8 @@ if( $_POST ){
   Year: <input type='text' name='Year' id='Year' /><br />
 
   <?php $query = "SELECT pmkPlanId FROM tbl4YP WHERE fnkNetId = ?";
-    $data = array(get_current_user());
+    $username = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
+    $data = array($username);
     $plans = $thisDatabaseReader->select($query, $data, 1, 0, 0, false, false);
     print '<select name="planID" id="planID">';
     foreach($plans as $plan){

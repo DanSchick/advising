@@ -8,12 +8,15 @@
      * To start, we print out information about the plan using queries
      */
     $planID = (int) $_GET['plan'];
-    $query = "SELECT fldStudentName, fldAdvisorName FROM tbl4YP
+    $query = "SELECT fldStudentName, fldAdvisorName, fldDateCreated FROM tbl4YP
     INNER JOIN tblAdvisor ON tbl4YP.fldAdvisorId = tblAdvisor.pmkNetId WHERE pmkPlanId=?";
     $data = array($planID);
     $names = $thisDatabaseWriter->select($query, $data, 1, 0, 0, false, false);
-    print '<h1>Student Name: ' . $names[0][0] . '</h1>';
-    print '<h1>Advisor Name: ' . $names[0][1] . '</h1>';
+    print '<div class="info">';
+    print '<h1>Student Name: </h1><p class="italic">' . $names[0][0] . '</p>';
+    print '<h1>Advisor Name: </h1><p class="italic">' . $names[0][1] . '</p>';
+    print '<h1>Date Created: </h1><p class="italic">' . $names[0][2] . '</p>';
+    print '</div>';
 
 
     /**
@@ -46,22 +49,12 @@
     function printQuery($query){
         $highlight = 1; // used to highlight alternate rows
         $columns = 2;
-        print '<table>';
+        print '<ul>';
         foreach ($query as $rec) {
-            $highlight++;
-            if ($highlight % 2 != 0) {
-                $style = ' odd ';
-            } else {
-                $style = ' even ';
-            }
-            print '<tr class="' . $style . '">';
-            for ($i = 0; $i < $columns; $i++) {
-                print '<td>' . $rec[$i] . '</td>';
-                print '<br>';
-            }
-            print '</tr>';
+            print '<li>' . $rec[0] . '</li>';
+
         }
-        print '</table>';
+        print '</ul>';
     }
 
     /*
@@ -151,9 +144,13 @@
      */
     print '<br><h1>Plan ID: ' . $planID . '</h1>';
     $planTerms = sortBySubValue(getTerms($planID), 'fldYear', true, false);
+    $lastYear = 'NULL'; // to create newlines
     foreach ($planTerms as $chunk){
         $year = $chunk[0];
         $sem = $chunk[1];
+        if($year != $lastYear){ // this will create a newline
+            print '<div class="newline">';}
+        print '<section class="' . $sem . '">';
         $q = getCoursesBySem($planID, $sem, $year);
         // we have to loop through the getCredits array because we have to pull out the number
         foreach(getCredits($planID, $sem, $year) as $i){
@@ -162,5 +159,9 @@
         print '<br><h2>' . $sem . ' ' . $year . '</h2>';
         print '<aside>' . printQuery($q) . '</aside>';
         print '<aside>Credits: ' . $credits . '</aside>';
+        print '</section>';
+        if($year != $lastYear){ // for a new line
+            print '</div>';}
+        $lastYear = $year;
     }
 ?>

@@ -5,7 +5,7 @@ require_once('lib/custom-functions.php');
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Title of page -- I changed it!</title>
+        <title>4 Year Planner</title>
         <meta charset="utf-8">
         <meta name="Danny Schick" content="Title page">
         <meta name="description" content="brings you to the tables">
