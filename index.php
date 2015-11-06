@@ -9,7 +9,7 @@ include "top.php";
 
 // Begin output
 print '<article>';
-print '<h2>I changed this too!</h2>';
+print '<h2>You can create your future with this website.<br>Go crazy with it.</h2>';
 print '</article>';
 include "footer.php";
 ?>

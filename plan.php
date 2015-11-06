@@ -12,7 +12,7 @@
     INNER JOIN tblAdvisor ON tbl4YP.fldAdvisorId = tblAdvisor.pmkNetId WHERE pmkPlanId=?";
     $data = array($planID);
     $names = $thisDatabaseWriter->select($query, $data, 1, 0, 0, false, false);
-    print '<div class="info">';
+    print '<br><br><div class="info">';
     print '<h1>Student Name: </h1><p class="italic">' . $names[0][0] . '</p>';
     print '<h1>Advisor Name: </h1><p class="italic">' . $names[0][1] . '</p>';
     print '<h1>Date Created: </h1><p class="italic">' . $names[0][2] . '</p>';
@@ -143,7 +143,7 @@
      * We use $_get to be able to view different plans
      */
     print '<br><h1>Plan ID: ' . $planID . '</h1>';
-    $planTerms = sortBySubValue(getTerms($planID), 'fldYear', true, false);
+    $planTerms = sortBySubValue(getTerms($planID), 'fldYear', true, false); // this sorts the terms of a plan according to year
     $lastYear = 'NULL'; // to create newlines
     foreach ($planTerms as $chunk){
         $year = $chunk[0];
